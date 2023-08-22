@@ -7,9 +7,12 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpThrust;
+    [SerializeField] private GameObject weaponPivot;
 
+    private Vector2 aimVector;
     private Vector2 moveVector;
     private Rigidbody2D playerRigidbody;
+    private enum aimDirection { up, down, left, right, upLeft, upRight, downLeft, downRight }
 
     void Awake()
     {
@@ -31,7 +34,10 @@ public class PlayerController : MonoBehaviour
             Jump();
         }
 
+
+
         moveVector = new Vector2(Input.GetAxis("Horizontal"),0);
+        aimVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
 
     private void FixedUpdate()
@@ -43,16 +49,49 @@ public class PlayerController : MonoBehaviour
     {
         if (playerRigidbody != null)
         {
-            playerRigidbody.AddForce(transform.up * jumpThrust, ForceMode2D.Impulse);
+            if(playerRigidbody.velocity.y == 0)
+            {
+                playerRigidbody.AddForce(transform.up * jumpThrust, ForceMode2D.Impulse);
+            }
+            
         }
     }
 
 
     private void Move()
     {
+        /*
+        //Option 1: AddForce
         if(playerRigidbody != null)
         {
-            playerRigidbody.AddForce(moveVector * moveSpeed, ForceMode2D.Force);
+            if(moveVector != Vector2.zero)
+            {
+                playerRigidbody.AddForce(moveVector * moveSpeed, ForceMode2D.Force);
+            }
+            else
+            {
+                playerRigidbody.AddForce(-playerRigidbody.velocity);
+            }
+            
+        }*/
+
+        //option 2: Velocity
+        if (playerRigidbody != null)
+        {
+            playerRigidbody.velocity = new Vector2(moveVector.x * moveSpeed, playerRigidbody.velocity.y);
+        }
+
+        /*
+        //option 3: Transform.Translate
+        transform.Translate(moveVector * moveSpeed * Time.deltaTime );
+        */
+
+    }
+
+    private void AimWeapon()
+    {
+        if(weaponPivot != null)
+        {
             
         }
     }
