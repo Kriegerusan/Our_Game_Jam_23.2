@@ -92,7 +92,18 @@ public class PlayerController : MonoBehaviour
     {
         if(weaponPivot != null)
         {
-            
+            if(aimVector == new Vector2(1, 1))
+            {
+
+            }
+            if(aimVector == new Vector2(-1, 1))
+            {
+
+            }
+            if(aimVector == new Vector2(0, 1))
+            {
+
+            }
         }
     }
 
