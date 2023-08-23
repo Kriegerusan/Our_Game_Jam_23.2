@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+
+    private enum aimDirections { up, down, left, right, upLeft, upRight, downLeft, downRight }
+
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpThrust;
     [SerializeField] private GameObject weaponPivot;
@@ -12,7 +16,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 aimVector;
     private Vector2 moveVector;
     private Rigidbody2D playerRigidbody;
-    private enum aimDirection { up, down, left, right, upLeft, upRight, downLeft, downRight }
+
+    aimDirections aimDirection;
 
     void Awake()
     {
@@ -36,13 +41,19 @@ public class PlayerController : MonoBehaviour
 
 
 
-        moveVector = new Vector2(Input.GetAxis("Horizontal"),0);
+        moveVector = new Vector2(Input.GetAxisRaw("Horizontal"),0);
         aimVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
     }
 
     private void FixedUpdate()
     {
         Move();
+    }
+
+    private void LateUpdate()
+    {
+        AimWeapon();
     }
 
     private void Jump()
@@ -86,25 +97,49 @@ public class PlayerController : MonoBehaviour
         transform.Translate(moveVector * moveSpeed * Time.deltaTime );
         */
 
+        //GameObject Flip direction
+        if (moveVector.x == -1)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else if (moveVector.x == 1)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
     }
 
     private void AimWeapon()
     {
+
         if(weaponPivot != null)
         {
-            if(aimVector == new Vector2(1, 1))
-            {
 
-            }
-            if(aimVector == new Vector2(-1, 1))
+            float angle = Mathf.Atan2(aimVector.y, aimVector.x) * Mathf.Rad2Deg;
+            if(aimVector.x < 0)
             {
-
-            }
-            if(aimVector == new Vector2(0, 1))
+                weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle +180));
+            }else if(transform.localScale.x < 0 && aimVector.y != 0)
             {
-
+                weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 180));
             }
+            else
+            {
+                weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            }
+
         }
+    }
+
+    private void UseItem()
+    {
+        //throw grenade
+    }
+
+    private void UseWeapon()
+    {
+        //shoot the gun
     }
 
 }
