@@ -10,8 +10,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpThrust;
     [SerializeField] private GameObject weaponPivot;
+    [SerializeField] private GameObject throwable;
+    
     private WeaponBehaviour weaponBehaviour;
-
     private Vector2 aimVector;
     private Vector2 moveVector;
     private Rigidbody2D playerRigidbody;
@@ -41,6 +42,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.J))
         {
             UseWeapon();
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            UseItem();
         }
 
 
@@ -136,7 +142,22 @@ public class PlayerController : MonoBehaviour
 
     private void UseItem()
     {
-        //throw grenade
+        //a changer pour une coroutine pour eviter de spam
+        //instancie le prefab grenade et applique une force a env 45 degree
+        GameObject grenade = Instantiate(throwable, transform.position, transform.rotation);
+
+        if (transform.localScale.x < 0)
+        {
+            grenade.GetComponent<Rigidbody2D>().AddForce(new Vector2(-6, 7), ForceMode2D.Impulse);
+
+        }
+        else
+        {
+            grenade.GetComponent<Rigidbody2D>().AddForce(new Vector2(6, 7), ForceMode2D.Impulse);
+
+        }
+
+
     }
 
     private void UseWeapon()
