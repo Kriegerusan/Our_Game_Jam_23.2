@@ -7,21 +7,26 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+    public static PlayerController Instance;
+
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpThrust;
     [SerializeField] private GameObject weaponPivot;
     [SerializeField] private GameObject throwable;
+    [SerializeField] private LayerMask layerJump;
     
     private WeaponBehaviour weaponBehaviour;
     private Vector2 aimVector;
     private Vector2 moveVector;
     private Rigidbody2D playerRigidbody;
+    private bool hasBeenKilled;
+
 
 
     void Awake()
     {
         playerRigidbody = GetComponent<Rigidbody2D>();
-
+        Instance = this;
     }
 
     // Start is called before the first frame update
@@ -34,20 +39,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             Jump();
         }
 
-        if (Input.GetKey(KeyCode.J))
+        if (Input.GetKey(KeyCode.K))
         {
             UseWeapon();
         }
 
-        if (Input.GetKeyDown(KeyCode.K))
+        /*
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            UseItem();
+            UseBomb();
         }
+        */
 
 
         moveVector = new Vector2(Input.GetAxisRaw("Horizontal"),0);
@@ -69,7 +76,8 @@ public class PlayerController : MonoBehaviour
     {
         if (playerRigidbody != null)
         {
-            if(playerRigidbody.velocity.y == 0)
+            
+            if(playerRigidbody.IsTouchingLayers(layerJump))
             {
                 playerRigidbody.AddForce(transform.up * jumpThrust, ForceMode2D.Impulse);
             }
@@ -95,16 +103,26 @@ public class PlayerController : MonoBehaviour
             
         }*/
 
+        /*
         //option 2: Velocity
         if (playerRigidbody != null)
         {
             playerRigidbody.velocity = new Vector2(moveVector.x * moveSpeed, playerRigidbody.velocity.y);
         }
+        /*
 
         /*
         //option 3: Transform.Translate
         transform.Translate(moveVector * moveSpeed * Time.deltaTime );
         */
+
+        //Option 4: transform Direction
+        Vector2 direction = transform.TransformDirection(new Vector2(Input.GetAxisRaw("Horizontal"), 0)).normalized * moveSpeed;
+
+        if(playerRigidbody != null)
+        {
+            playerRigidbody.velocity = new Vector2(direction.x, playerRigidbody.velocity.y);
+        }
 
         //GameObject Flip direction
         if (moveVector.x == -1)
@@ -128,7 +146,8 @@ public class PlayerController : MonoBehaviour
             if(aimVector.x < 0)
             {
                 weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle +180));
-            }else if(transform.localScale.x < 0 && aimVector.y != 0)
+            }
+            else if(transform.localScale.x < 0 && aimVector.y != 0)
             {
                 weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 180));
             }
@@ -140,7 +159,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UseItem()
+    private void UseBomb()
     {
         //a changer pour une coroutine pour eviter de spam
         //instancie le prefab grenade et applique une force a env 45 degree
@@ -168,5 +187,12 @@ public class PlayerController : MonoBehaviour
         }
         //shoot the gun
     }
+
+    public void SetDeath(bool value)
+    {
+        hasBeenKilled = value;
+
+    }
+
 
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-
+    
     private float moveSpeed;
 
     // Start is called before the first frame update
@@ -19,9 +19,21 @@ public class Projectile : MonoBehaviour
         transform.Translate(new Vector3(1, 0, 0) * moveSpeed * Time.deltaTime);
     }
 
+
     public void SetBulletSpeed(float amount)
     {
         moveSpeed = amount;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Enemy")
+        {
+            Destroy(gameObject);
+
+            collision.gameObject.GetComponent<EnemyBehaviour>().TakeDamage();
+        }
+        
     }
 
 
