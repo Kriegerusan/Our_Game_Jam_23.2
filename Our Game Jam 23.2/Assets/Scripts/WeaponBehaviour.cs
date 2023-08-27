@@ -9,6 +9,8 @@ public abstract class WeaponBehaviour : MonoBehaviour
     [SerializeField] protected float projectileSpeed;
     protected bool isFiring;
     protected SpriteRenderer weaponSprite;
+    protected int weaponAmmo;
+    protected bool countedAmmo;
 
     protected void Awake()
     {

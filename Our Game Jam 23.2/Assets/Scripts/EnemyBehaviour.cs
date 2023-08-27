@@ -12,17 +12,20 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private int pointsGiven = 100;
     [SerializeField] private float fireRate = 0.4f;
     [SerializeField] private float bulletSpeed;
+    [SerializeField] private bool chasePlayer;
 
     private PlayerController player;
     private SpriteRenderer enemySprite;
     private Rigidbody2D enemyRigidbody;
     private bool inShootingState, isShooting;
     private bool isDead;
+    private DamageBlink blinker;
 
     private void Awake()
     {
         enemySprite = GetComponent<SpriteRenderer>();
         enemyRigidbody = GetComponent<Rigidbody2D>();
+        blinker = GetComponent<DamageBlink>();
         
     }
 
@@ -35,7 +38,7 @@ public class EnemyBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemySprite.isVisible)
+        if (enemySprite.isVisible && !isDead)
         {
             ShootPlayer();
             
@@ -45,7 +48,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (enemySprite.isVisible)
+        if (enemySprite.isVisible && chasePlayer && !isDead)
         {
             ChasePlayer();
         }
@@ -58,7 +61,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             inShootingState = true;
 
-            Debug.Log("I shoot the player !");
+            
             if (!isShooting)
             {
                 StartCoroutine(ShootCoroutine());
@@ -79,11 +82,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage()
     {
-        Destroy(gameObject);
-
         if (!isDead)
         {
+            enemyRigidbody.velocity = Vector2.zero;
             GameManager.Instance.AddScore(pointsGiven);
+            blinker.Blink();
+            Destroy(gameObject, 1);
         }
 
         isDead = true;

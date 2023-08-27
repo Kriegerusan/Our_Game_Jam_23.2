@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 aimVector;
     private Vector2 moveVector;
     private Rigidbody2D playerRigidbody;
-    private bool hasBeenKilled;
+    private bool hasBeenKilled, isTouchingGround;
 
 
 
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
         if (playerRigidbody != null)
         {
             
-            if(playerRigidbody.IsTouchingLayers(layerJump))
+            if(isTouchingGround)
             {
                 playerRigidbody.AddForce(transform.up * jumpThrust, ForceMode2D.Impulse);
             }
@@ -188,11 +188,29 @@ public class PlayerController : MonoBehaviour
         //shoot the gun
     }
 
+    public void ChangeWeapon() { }
+
     public void SetDeath(bool value)
     {
         hasBeenKilled = value;
 
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Ground")
+        {
+            isTouchingGround = true;
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Ground")
+        {
+            isTouchingGround = false;
+        }
+    }
 
 }

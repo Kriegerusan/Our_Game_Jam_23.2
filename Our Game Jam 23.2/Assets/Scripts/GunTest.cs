@@ -10,6 +10,9 @@ public class GunTest : WeaponBehaviour
     void Start()
     {
         weaponSprite.sprite = weaponData.sprite;
+        transform.localPosition = weaponData.weaponOffset;
+        muzzle.transform.localPosition = weaponData.muzzleOffset;
+
     }
 
     public override void Shoot()
@@ -21,9 +24,23 @@ public class GunTest : WeaponBehaviour
         
     }
 
+    public void SetWeapon(Weapon_Data weaponData)
+    {
+        weaponSprite.sprite = weaponData.sprite;
+        transform.localPosition = weaponData.weaponOffset;
+        muzzle.transform.localPosition = weaponData.muzzleOffset;
+        weaponAmmo = weaponData.ammo;
+    }
+
     private IEnumerator ShootCoroutine()
     {
+
         isFiring = true;
+
+        if (weaponData.countAmmo)
+        {
+            weaponAmmo--;
+        }
 
         if (transform.lossyScale.x < 0)
         {

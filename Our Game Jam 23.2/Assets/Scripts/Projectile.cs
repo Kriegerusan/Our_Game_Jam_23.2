@@ -6,17 +6,21 @@ public class Projectile : MonoBehaviour
 {
     
     private float moveSpeed;
+    private SpriteRenderer bulletRenderer;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        Destroy(gameObject, 1);
+        bulletRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
         transform.Translate(new Vector3(1, 0, 0) * moveSpeed * Time.deltaTime);
+        if (!bulletRenderer.isVisible)
+        {
+            Destroy(gameObject);
+        }
     }
 
 
@@ -29,11 +33,12 @@ public class Projectile : MonoBehaviour
     {
         if(collision.tag == "Enemy")
         {
-            Destroy(gameObject);
+            
 
             collision.gameObject.GetComponent<EnemyBehaviour>().TakeDamage();
         }
-        
+        Destroy(gameObject);
+
     }
 
 

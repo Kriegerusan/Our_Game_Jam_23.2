@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7467446554463516224}
   - component: {fileID: 7467446554463516231}
   - component: {fileID: 7467446554463516227}
+  - component: {fileID: 3032166209073649116}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -69,8 +70,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: 0, y: 0.15}
+  m_Size: {x: 0.5, y: 1.4}
   m_Direction: 0
 --- !u!212 &7467446554463516231
 SpriteRenderer:
@@ -113,7 +114,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: de95789103add5a4c86a8ffcbf8cd599, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 410eff2df0676614aa6ba6b91398d041, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -143,3 +144,20 @@ MonoBehaviour:
   pointsGiven: 100
   fireRate: 1
   bulletSpeed: 4.5
+  chasePlayer: 1
+--- !u!114 &3032166209073649116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7467446554463516230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f17aebb8645ded49b74607591cce61f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blinkRate: 0.1
+  blinkLength: 1
+  damageMaterial: {fileID: 2100000, guid: ad4d5f38e5a51434c812f7a45fdf667a, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 937e6f4abf844cb40b28819f09dc40b4, type: 2}

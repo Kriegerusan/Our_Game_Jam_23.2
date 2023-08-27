@@ -6,17 +6,23 @@ public class EnemyProjectile : MonoBehaviour
 {
 
     private float moveSpeed;
+    private SpriteRenderer bulletRenderer;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
-        Destroy(gameObject, 2);
+        bulletRenderer = GetComponent<SpriteRenderer>();
     }
+
 
     // Update is called once per frame
     void Update()
     {
         transform.Translate(new Vector3(1, 0, 0) * moveSpeed * Time.deltaTime);
+        if (!bulletRenderer.isVisible)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GameManager
   - Enemy
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -16,11 +17,11 @@ TagManager:
   - Player
   - Enemy
   - Throwable
-  - Projectile
-  - Item
+  - Player Projectile
+  - Enemy Projectile
   - Confiner
-  - 
-  - 
+  - Ground
+  - Item
   - 
   - 
   - 
