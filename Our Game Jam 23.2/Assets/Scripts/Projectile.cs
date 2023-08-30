@@ -33,8 +33,6 @@ public class Projectile : MonoBehaviour
     {
         if(collision.tag == "Enemy")
         {
-            
-
             collision.gameObject.GetComponent<EnemyBehaviour>().TakeDamage();
         }
         Destroy(gameObject);

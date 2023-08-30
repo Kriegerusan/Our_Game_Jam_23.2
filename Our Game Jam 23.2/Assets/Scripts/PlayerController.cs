@@ -21,10 +21,11 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D playerRigidbody;
     private bool hasBeenKilled, isTouchingGround;
 
-
+    public DamageBlink blinker;
 
     void Awake()
     {
+        blinker = GetComponent<DamageBlink>();
         playerRigidbody = GetComponent<Rigidbody2D>();
         Instance = this;
     }
@@ -39,22 +40,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J))
+        if (!hasBeenKilled)
         {
-            Jump();
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                Jump();
+            }
+
+            if (Input.GetKey(KeyCode.K))
+            {
+                UseWeapon();
+            }
+
+            /*
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                UseBomb();
+            }
+            */
         }
 
-        if (Input.GetKey(KeyCode.K))
-        {
-            UseWeapon();
-        }
-
-        /*
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            UseBomb();
-        }
-        */
 
 
         moveVector = new Vector2(Input.GetAxisRaw("Horizontal"),0);
@@ -64,12 +69,18 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        if (!hasBeenKilled)
+        {
+            Move();
+        }
     }
 
     private void LateUpdate()
     {
-        AimWeapon();
+        if (!hasBeenKilled)
+        {
+            AimWeapon();
+        }
     }
 
     private void Jump()
@@ -179,6 +190,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
     private void UseWeapon()
     {
         if(weaponBehaviour != null)
@@ -193,8 +205,10 @@ public class PlayerController : MonoBehaviour
     public void SetDeath(bool value)
     {
         hasBeenKilled = value;
-
+        blinker.Blink();
+        playerRigidbody.velocity = Vector2.zero;
     }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -203,6 +217,14 @@ public class PlayerController : MonoBehaviour
             isTouchingGround = true;
         }
 
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Ground")
+        {
+            isTouchingGround = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)

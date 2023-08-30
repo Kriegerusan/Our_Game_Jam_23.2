@@ -31,8 +31,8 @@ public class EnemyProjectile : MonoBehaviour
         {
             if (collision.tag == "Player")
             {
-                
-                Debug.Log("Player got shot");
+
+                GameManager.Instance.PlayerLostLive();
             }
             Destroy(gameObject);
         }

@@ -2,15 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance;
-    [SerializeField] private TextMeshProUGUI livesText, timerText, scoreText, creditsText;
+    [SerializeField] private TextMeshProUGUI livesText, timerText, scoreText, creditsText, highScoreText;
     [SerializeField] private int levelTime = 180;
     [SerializeField] private int pointsByTime;
     [SerializeField] private Vector2 cameraOffset;
+    [SerializeField] private GameObject gameOverScreen, winScreen;
+    [SerializeField] private AudioClip[] audioClips;
+    [SerializeField] private Trigger winTrigger;
     
     private bool gameOver;
     private Camera mainCamera;
@@ -19,27 +23,36 @@ public class GameManager : MonoBehaviour
     private int credits = 0;
     private int score = 0;
     private Vector2 cameraDirection;
+    private GameObject player;
+    private bool deathCoroutine, isInvincible;
+    private int sceneIndex;
+    private AudioSource audiosource;
 
     private void Awake()
     {
+        
         Instance = this;
         mainCamera = Camera.main;
+        audiosource = GetComponent<AudioSource>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        player = PlayerController.Instance.gameObject;
         currentLives = maxLives;
         livesText.text = "x " +currentLives.ToString();
         timerText.text = levelTime.ToString();
-        creditsText.text = "credits : " + credits.ToString();
+        //creditsText.text = "credits : " + credits.ToString();
         scoreText.text = score.ToString();
         StartCoroutine(CountdownCoroutine());
+        sceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Space))
         {
             credits++;
@@ -51,6 +64,7 @@ public class GameManager : MonoBehaviour
         {
             UseCredits();
         }
+        */
 
         CameraManagement();
     }
@@ -105,6 +119,15 @@ public class GameManager : MonoBehaviour
 
     public void PlayerLostLive()
     {
+        if (!deathCoroutine)
+        {
+            StartCoroutine(LostLiveCoroutine());
+        }
+    }
+
+    private IEnumerator LostLiveCoroutine()
+    {
+        deathCoroutine = true;
         if (currentLives > 0)
         {
             PlayerController.Instance.SetDeath(true);
@@ -119,15 +142,41 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            gameOver = true;
+            
+            StartCoroutine(GameOverCoroutine());
         }
+
+        yield return new WaitForSeconds(3);
+        player.transform.position = mainCamera.transform.position;
+        PlayerController.Instance.SetDeath(false);
+        yield return new WaitForSeconds(3);
+        deathCoroutine = false;
+    }
+
+    private IEnumerator GameOverCoroutine()
+    {
+        gameOverScreen.SetActive(true);
+        audiosource.clip = audioClips[1];
+        audiosource.Play();
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(0);
     }
 
     //Game Winning
 
     public void WinLevel()
     {
+        StartCoroutine(WinCoroutine());
+    }
+
+    private IEnumerator WinCoroutine()
+    {
+        winScreen.SetActive(true);
         score += pointsByTime * levelTime;
+        audiosource.clip = audioClips[2];
+        audiosource.Play();
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(0);
     }
 
     //Camera Management

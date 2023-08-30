@@ -84,6 +84,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (!isDead)
         {
+            gameObject.GetComponent<Collider2D>().enabled = false;
             enemyRigidbody.velocity = Vector2.zero;
             GameManager.Instance.AddScore(pointsGiven);
             blinker.Blink();
